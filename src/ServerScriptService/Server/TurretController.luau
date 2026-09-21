@@ -4,6 +4,7 @@ local RunService = game:GetService("RunService")
 local Workspace = game:GetService("Workspace")
 local Debris = game:GetService("Debris")
 
+local Config = require(game:GetService("ReplicatedStorage").Modules.Config)
 local DefenseData = require(game:GetService("ReplicatedStorage").Modules.DefenseData)
 
 local ZombieAI = require(script.Parent.ZombieAI)
@@ -97,6 +98,35 @@ local function buildTurretModel(defense)
 		orb.CanCollide = false
 		orb.CFrame = CFrame.new(0, 4.8, 0)
 		orb.Parent = model
+	elseif defense.id == "siege_cannon" then
+		base.Size = Vector3.new(1.6, 4.2, 4.2)
+
+		barrel(model, 4.4, 1.05, Vector3.new(0, 2.9, -2.1), math.rad(-4), Color3.fromRGB(45, 45, 55))
+
+		local ring = Instance.new("Part")
+		ring.Name = "PowerRing"
+		ring.Shape = Enum.PartType.Cylinder
+		ring.Size = Vector3.new(0.3, 1.9, 1.9)
+		ring.Color = defense.color
+		ring.Material = Enum.Material.Neon
+		ring.Anchored = true
+		ring.CanCollide = false
+		ring.CFrame = CFrame.new(0, 2.9, -0.5) * CFrame.Angles(0, math.rad(90), 0)
+		ring.Parent = model
+
+		local function stabilizerFin(offsetX)
+			local fin = Instance.new("WedgePart")
+			fin.Name = "Fin"
+			fin.Size = Vector3.new(0.4, 1.6, 2.2)
+			fin.Color = Color3.fromRGB(45, 45, 55)
+			fin.Material = Enum.Material.Metal
+			fin.Anchored = true
+			fin.CanCollide = false
+			fin.CFrame = CFrame.new(offsetX * 2.1, 2, 0.6) * CFrame.Angles(0, math.rad(offsetX * -90), 0)
+			fin.Parent = model
+		end
+		stabilizerFin(-1)
+		stabilizerFin(1)
 	end
 
 	model.PrimaryPart = base
@@ -166,7 +196,10 @@ function TurretController.Init()
 	end)
 end
 
-function TurretController.Build(plot, slotIndex, defenseId)
+-- `localOffset` (Vector3, optional) is the turret's position relative to
+-- the plot platform's own center/rotation; omit it to use the slot's
+-- default corner position.
+function TurretController.Build(plot, slotIndex, defenseId, localOffset)
 	local defense = DefenseData.ById[defenseId]
 	if not defense then
 		return
@@ -178,14 +211,13 @@ function TurretController.Build(plot, slotIndex, defenseId)
 		existing:Destroy()
 	end
 
-	local slotPad = plot.slots:FindFirstChild("Slot" .. slotIndex)
-	if not slotPad then
-		return
-	end
+	local offset = localOffset or Config.DefaultTurretOffsets[slotIndex] or Vector3.new(0, 0, 0)
+	local worldPos = plot.platform.CFrame:PointToWorldSpace(Vector3.new(offset.X, 0, offset.Z))
+	local placeAt = Vector3.new(worldPos.X, plot.platform.Position.Y + plot.platform.Size.Y / 2, worldPos.Z)
 
 	local model = buildTurretModel(defense)
 	model.Parent = plot.model
-	model:PivotTo(CFrame.new(slotPad.Position))
+	model:PivotTo(CFrame.new(placeAt))
 
 	plot.turrets[slotIndex] = model
 

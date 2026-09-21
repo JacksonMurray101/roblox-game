@@ -8,6 +8,7 @@ return {
 	{ name = "WaveStateUpdate", kind = "RemoteEvent" },
 	{ name = "EquipWeapon", kind = "RemoteFunction" },
 	{ name = "EquipDefense", kind = "RemoteFunction" },
+	{ name = "PlaceDefense", kind = "RemoteFunction" },
 	{ name = "SpinWheel", kind = "RemoteFunction" },
 	{ name = "BuyLuckUpgrade", kind = "RemoteFunction" },
 }

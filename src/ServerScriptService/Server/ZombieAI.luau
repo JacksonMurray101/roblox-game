@@ -298,8 +298,16 @@ function ZombieAI._step(dt)
 			targetPos = currentPos + direction * speed * dt
 		elseif now >= state.nextAttackTime then
 			state.nextAttackTime = now + ATTACK_INTERVAL
-			local coreHealth = math.max((plot.core:GetAttribute("Health") or 0) - state.damage, 0)
-			plot.core:SetAttribute("Health", coreHealth)
+			local previousHealth = plot.core:GetAttribute("Health") or 0
+			if previousHealth > 0 then
+				local coreHealth = math.max(previousHealth - state.damage, 0)
+				plot.core:SetAttribute("Health", coreHealth)
+				if coreHealth <= 0 then
+					PlotManager.OnCoreDestroyed(plot)
+				else
+					PlotManager.UpdateCoreVisual(plot)
+				end
+			end
 		end
 
 		state.facing = direction

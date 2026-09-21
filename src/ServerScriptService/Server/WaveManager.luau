@@ -59,11 +59,15 @@ local function broadcastWaveState()
 end
 
 local function healCores()
+	-- Heals every owned core, including one destroyed this wave (0 HP), so
+	-- a player who died isn't locked out permanently -- their base slowly
+	-- comes back online over subsequent cooldowns.
 	for _, plot in ipairs(PlotManager.GetAll()) do
-		if plot.owner and plot.core:GetAttribute("Health") > 0 then
-			local health = plot.core:GetAttribute("Health")
-			local maxHealth = plot.core:GetAttribute("MaxHealth")
+		if plot.owner then
+			local health = plot.core:GetAttribute("Health") or 0
+			local maxHealth = plot.core:GetAttribute("MaxHealth") or Config.CoreMaxHealth
 			plot.core:SetAttribute("Health", math.min(health + Config.CoreRegenPerWaveCooldown, maxHealth))
+			PlotManager.UpdateCoreVisual(plot)
 		end
 	end
 end

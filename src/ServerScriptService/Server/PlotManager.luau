@@ -10,12 +10,28 @@ local plots = {}
 local plotByOwner = {} -- [userId] = plot
 local plotsFolder
 
-local slotOffsets = {
-	Vector3.new(-15, 0, -15),
-	Vector3.new(15, 0, -15),
-	Vector3.new(-15, 0, 15),
-	Vector3.new(15, 0, 15),
-}
+local function scatterDebris()
+	local debrisFolder = Instance.new("Folder")
+	debrisFolder.Name = "Debris"
+	debrisFolder.Parent = Workspace
+
+	for _ = 1, 60 do
+		local angle = math.random() * math.pi * 2
+		local radius = math.random(Config.PlotRadius + 90, 280)
+		local position = Config.MapCenter + Vector3.new(math.cos(angle) * radius, 3, math.sin(angle) * radius)
+
+		local rock = Instance.new("Part")
+		rock.Name = "Rock"
+		rock.Anchored = true
+		rock.CanCollide = false
+		local size = math.random(15, 45) / 10
+		rock.Size = Vector3.new(size, size * (math.random(6, 12) / 10), size)
+		rock.Color = Color3.fromRGB(math.random(45, 70), math.random(45, 65), math.random(45, 60))
+		rock.Material = Enum.Material.Rock
+		rock.CFrame = CFrame.new(position) * CFrame.Angles(0, math.random() * math.pi * 2, 0)
+		rock.Parent = debrisFolder
+	end
+end
 
 local function buildGround()
 	local ground = Instance.new("Part")
@@ -35,6 +51,8 @@ local function buildGround()
 	spawnLocation.Material = Enum.Material.Neon
 	spawnLocation.Color = Color3.fromRGB(80, 80, 200)
 	spawnLocation.Parent = Workspace
+
+	scatterDebris()
 end
 
 local function buildPlot(index)
@@ -117,7 +135,7 @@ local function buildPlot(index)
 	slotsFolder.Parent = model
 
 	for slotIndex = 1, Config.TurretSlotsPerPlot do
-		local offset = slotOffsets[slotIndex] or Vector3.new(0, 0, 0)
+		local offset = Config.DefaultTurretOffsets[slotIndex] or Vector3.new(0, 0, 0)
 		local pad = Instance.new("Part")
 		pad.Name = "Slot" .. slotIndex
 		pad.Anchored = true
@@ -125,7 +143,7 @@ local function buildPlot(index)
 		pad.Size = Vector3.new(5, 0.4, 5)
 		pad.Color = Color3.fromRGB(90, 90, 100)
 		pad.Material = Enum.Material.Metal
-		pad.CFrame = lookAt * CFrame.new(offset.X, 0, offset.Z + 10)
+		pad.CFrame = platform.CFrame * CFrame.new(offset.X, platform.Size.Y / 2 + 0.05, offset.Z)
 		pad.Parent = slotsFolder
 	end
 
@@ -152,7 +170,7 @@ local function buildPlot(index)
 		spawnPoint = spawnPoint,
 		owner = nil,
 		optedIn = true,
-		turrets = {}, -- [slotIndex] = turret Part
+		turrets = {}, -- [slotIndex] = turret Model
 	}
 end
 
@@ -219,6 +237,47 @@ function PlotManager.SetOptedIn(player, optedIn)
 	end
 	plot.optedIn = optedIn
 	plot.bubble.Transparency = optedIn and 1 or 0.75
+end
+
+-- Recolors the core (green -> yellow -> red -> dark/destroyed) and resizes
+-- its health-bar fill to match its current Health attribute.
+function PlotManager.UpdateCoreVisual(plot)
+	local health = plot.core:GetAttribute("Health") or 0
+	local maxHealth = plot.core:GetAttribute("MaxHealth") or 1
+	local pct = math.clamp(health / maxHealth, 0, 1)
+
+	plot.hpFill.Size = UDim2.fromScale(pct, 1)
+
+	if pct <= 0 then
+		plot.core.Material = Enum.Material.Slate
+		plot.core.Color = Color3.fromRGB(40, 40, 40)
+	else
+		plot.core.Material = Enum.Material.Neon
+		if pct > 0.5 then
+			plot.core.Color = Color3.fromRGB(70, 200, 90)
+		elseif pct > 0.2 then
+			plot.core.Color = Color3.fromRGB(230, 200, 60)
+		else
+			plot.core.Color = Color3.fromRGB(220, 70, 60)
+		end
+	end
+end
+
+-- Called the moment a plot's core hits 0 HP: kills the owner's character as
+-- the real, felt consequence of letting a base fall.
+function PlotManager.OnCoreDestroyed(plot)
+	local player = plot.owner
+	if not player then
+		return
+	end
+
+	local character = player.Character
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	if humanoid and humanoid.Health > 0 then
+		humanoid.Health = 0
+	end
+
+	PlotManager.UpdateCoreVisual(plot)
 end
 
 return PlotManager

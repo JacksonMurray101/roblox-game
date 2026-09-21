@@ -26,6 +26,17 @@ Config.LuckPerUpgrade = 1
 Config.LuckWheelWeightBonus = 0.04 -- +4% weight shift toward non-Common rewards per luck point
 
 Config.TurretSlotsPerPlot = 4
+Config.PlacementEdgeMargin = 3 -- studs kept clear from a plot's platform edge when placing a turret
+
+-- Default turret positions before a player has customized placement, as
+-- offsets from the plot platform's own center (local space, so they follow
+-- each plot's rotation automatically).
+Config.DefaultTurretOffsets = {
+	Vector3.new(-15, 0, -15),
+	Vector3.new(15, 0, -15),
+	Vector3.new(-15, 0, 15),
+	Vector3.new(15, 0, 15),
+}
 
 Config.StarterWeaponId = "pistol"
 Config.StarterDefenseId = "basic_turret"

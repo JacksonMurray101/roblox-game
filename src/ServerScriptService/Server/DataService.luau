@@ -19,6 +19,7 @@ local function defaultData()
 		OwnedDefenses = { [Config.StarterDefenseId] = true },
 		EquippedWeapon = Config.StarterWeaponId,
 		EquippedDefenses = { Config.StarterDefenseId },
+		DefensePositions = {}, -- [slotIndex] = { x = <local offset>, z = <local offset> }
 	}
 end
 

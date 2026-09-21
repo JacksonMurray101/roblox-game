@@ -2,6 +2,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local Debris = game:GetService("Debris")
+local Lighting = game:GetService("Lighting")
 
 local RemoteDefinitions = require(ReplicatedStorage.Modules.RemoteDefinitions)
 local WeaponData = require(ReplicatedStorage.Modules.WeaponData)
@@ -14,6 +15,39 @@ local CurrencyService = require(script.CurrencyService)
 local WaveManager = require(script.WaveManager)
 local EquipmentService = require(script.EquipmentService)
 local WheelService = require(script.WheelService)
+
+local function setupAtmosphere()
+	Lighting.ClockTime = 18.4
+	Lighting.Brightness = 1.6
+	Lighting.Ambient = Color3.fromRGB(35, 38, 45)
+	Lighting.OutdoorAmbient = Color3.fromRGB(60, 65, 75)
+	Lighting.FogColor = Color3.fromRGB(90, 100, 110)
+	Lighting.FogStart = 220
+	Lighting.FogEnd = 850
+
+	local atmosphere = Instance.new("Atmosphere")
+	atmosphere.Density = 0.35
+	atmosphere.Offset = 0.2
+	atmosphere.Color = Color3.fromRGB(150, 150, 160)
+	atmosphere.Decay = Color3.fromRGB(80, 70, 70)
+	atmosphere.Glare = 0.15
+	atmosphere.Haze = 1.8
+	atmosphere.Parent = Lighting
+
+	local bloom = Instance.new("BloomEffect")
+	bloom.Intensity = 0.6
+	bloom.Size = 24
+	bloom.Threshold = 1.4
+	bloom.Parent = Lighting
+
+	local colorCorrection = Instance.new("ColorCorrectionEffect")
+	colorCorrection.Saturation = -0.15
+	colorCorrection.Contrast = 0.08
+	colorCorrection.TintColor = Color3.fromRGB(225, 235, 230)
+	colorCorrection.Parent = Lighting
+end
+
+setupAtmosphere()
 
 local remotesFolder = Instance.new("Folder")
 remotesFolder.Name = "Remotes"
@@ -92,6 +126,10 @@ end
 
 remotes.EquipDefense.OnServerInvoke = function(player, slotIndex, defenseId)
 	return EquipmentService.EquipDefense(player, slotIndex, defenseId)
+end
+
+remotes.PlaceDefense.OnServerInvoke = function(player, slotIndex, localOffset)
+	return EquipmentService.PlaceDefense(player, slotIndex, localOffset)
 end
 
 remotes.SpinWheel.OnServerInvoke = function(player, wheelId)

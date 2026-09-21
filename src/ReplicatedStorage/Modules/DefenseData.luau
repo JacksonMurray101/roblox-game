@@ -58,6 +58,15 @@ DefenseData.List = {
 		range = 50,
 		color = Color3.fromRGB(255, 230, 60),
 	},
+	{
+		id = "siege_cannon",
+		name = "Siege Cannon",
+		rarity = "Legendary",
+		damage = 140,
+		fireRate = 0.6,
+		range = 65,
+		color = Color3.fromRGB(255, 200, 60),
+	},
 }
 
 DefenseData.ById = {}

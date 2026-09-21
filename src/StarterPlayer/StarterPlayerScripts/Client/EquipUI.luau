@@ -4,6 +4,8 @@ local WeaponData = require(ReplicatedStorage.Modules.WeaponData)
 local DefenseData = require(ReplicatedStorage.Modules.DefenseData)
 local Config = require(ReplicatedStorage.Modules.Config)
 
+local PlacementController = require(script.Parent.PlacementController)
+
 local EquipUI = {}
 
 local function makeRow(parent, text, color)
@@ -38,8 +40,8 @@ function EquipUI.Init(player, remotes, GameState)
 	toggleButton.Parent = screenGui
 
 	local panel = Instance.new("Frame")
-	panel.Size = UDim2.new(0, 460, 0, 440)
-	panel.Position = UDim2.new(0, 170, 1, -500)
+	panel.Size = UDim2.new(0, 460, 0, 490)
+	panel.Position = UDim2.new(0, 170, 1, -550)
 	panel.AnchorPoint = Vector2.new(0, 1)
 	panel.BackgroundColor3 = Color3.fromRGB(20, 20, 26)
 	panel.Visible = false
@@ -96,7 +98,25 @@ function EquipUI.Init(player, remotes, GameState)
 	defenseLayout.Padding = UDim.new(0, 6)
 	defenseLayout.Parent = defenseList
 
+	local placeButton = Instance.new("TextButton")
+	placeButton.Size = UDim2.new(1, -24, 0, 36)
+	placeButton.Position = UDim2.new(0, 12, 0, 444)
+	placeButton.BackgroundColor3 = Color3.fromRGB(90, 150, 90)
+	placeButton.Font = Enum.Font.GothamBold
+	placeButton.TextScaled = true
+	placeButton.TextColor3 = Color3.new(1, 1, 1)
+	placeButton.Text = "Place Selected Turret"
+	placeButton.Parent = panel
+
 	local selectedSlot = 1
+
+	placeButton.MouseButton1Click:Connect(function()
+		if not GameState.EquippedDefenses[selectedSlot] then
+			return
+		end
+		panel.Visible = false
+		PlacementController.Begin(selectedSlot)
+	end)
 
 	local function refreshWeapons()
 		for _, child in ipairs(weaponList:GetChildren()) do

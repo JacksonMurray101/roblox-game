@@ -1,5 +1,7 @@
 local UserInputService = game:GetService("UserInputService")
 
+local PlacementController = require(script.Parent.PlacementController)
+
 local WeaponController = {}
 
 function WeaponController.Init(player, remotes, GameState)
@@ -13,6 +15,9 @@ function WeaponController.Init(player, remotes, GameState)
 			return
 		end
 		if not GameState.EquippedWeapon then
+			return
+		end
+		if PlacementController.IsActive() then
 			return
 		end
 
