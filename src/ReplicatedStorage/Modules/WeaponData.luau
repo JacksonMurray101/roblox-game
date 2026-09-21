@@ -9,6 +9,7 @@ WeaponData.List = {
 		damage = 12,
 		fireRate = 3, -- shots per second
 		range = 60,
+		tracerColor = Color3.fromRGB(255, 240, 150),
 	},
 	{
 		id = "smg",
@@ -17,6 +18,7 @@ WeaponData.List = {
 		damage = 7,
 		fireRate = 8,
 		range = 55,
+		tracerColor = Color3.fromRGB(255, 170, 60),
 	},
 	{
 		id = "shotgun",
@@ -25,6 +27,7 @@ WeaponData.List = {
 		damage = 45,
 		fireRate = 1.2,
 		range = 30,
+		tracerColor = Color3.fromRGB(255, 90, 60),
 	},
 	{
 		id = "sniper",
@@ -33,6 +36,7 @@ WeaponData.List = {
 		damage = 90,
 		fireRate = 0.8,
 		range = 150,
+		tracerColor = Color3.fromRGB(90, 200, 255),
 	},
 	{
 		id = "laser_rifle",
@@ -41,6 +45,7 @@ WeaponData.List = {
 		damage = 25,
 		fireRate = 6,
 		range = 90,
+		tracerColor = Color3.fromRGB(80, 255, 140),
 	},
 	{
 		id = "rocket_launcher",
@@ -49,6 +54,7 @@ WeaponData.List = {
 		damage = 150,
 		fireRate = 0.5,
 		range = 100,
+		tracerColor = Color3.fromRGB(255, 80, 220),
 	},
 }
 

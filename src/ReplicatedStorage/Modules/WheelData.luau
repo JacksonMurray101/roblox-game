@@ -43,6 +43,12 @@ WheelData.List = {
 WheelData.ById = {}
 for _, wheel in ipairs(WheelData.List) do
 	WheelData.ById[wheel.id] = wheel
+	-- Stable index per reward so a spin result can be matched back to the
+	-- exact wheel segment it came from (RemoteFunction results are copies,
+	-- not the same table reference as the source data).
+	for i, reward in ipairs(wheel.rewards) do
+		reward.index = i
+	end
 end
 
 return WheelData

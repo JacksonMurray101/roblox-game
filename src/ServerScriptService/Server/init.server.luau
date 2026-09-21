@@ -1,6 +1,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
+local Debris = game:GetService("Debris")
 
 local RemoteDefinitions = require(ReplicatedStorage.Modules.RemoteDefinitions)
 local WeaponData = require(ReplicatedStorage.Modules.WeaponData)
@@ -145,8 +146,27 @@ remotes.FireWeapon.OnServerEvent:Connect(function(player, targetPosition)
 	raycastParams.FilterDescendantsInstances = { ZombieAI.GetZombiesFolder() }
 
 	local result = Workspace:Raycast(origin, direction, raycastParams)
-	if result and result.Instance:GetAttribute("Health") then
-		ZombieAI.Damage(result.Instance, weapon.damage, player)
+	local endPoint = result and result.Position or (origin + direction)
+
+	local tracerDistance = (endPoint - origin).Magnitude
+	local tracer = Instance.new("Part")
+	tracer.Anchored = true
+	tracer.CanCollide = false
+	tracer.CanQuery = false
+	tracer.Material = Enum.Material.Neon
+	tracer.Color = weapon.tracerColor or Color3.new(1, 1, 1)
+	tracer.Size = Vector3.new(0.15, 0.15, tracerDistance)
+	tracer.CFrame = CFrame.lookAt(origin, endPoint) * CFrame.new(0, 0, -tracerDistance / 2)
+	tracer.Parent = Workspace
+	Debris:AddItem(tracer, 0.06)
+
+	if result then
+		-- Zombies are Models (torso/head/limbs); a hit part's Parent is the
+		-- owning Model, which is where Health/PlotId attributes live.
+		local zombieModel = result.Instance.Parent
+		if zombieModel and zombieModel:GetAttribute("Health") then
+			ZombieAI.Damage(zombieModel, weapon.damage, player)
+		end
 	end
 end)
 
