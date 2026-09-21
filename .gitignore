@@ -1,0 +1,5 @@
+*.rbxl
+*.rbxlx
+*.log
+sourcemap.json
+.vscode/
