@@ -15,6 +15,7 @@ local CurrencyService = require(script.CurrencyService)
 local WaveManager = require(script.WaveManager)
 local EquipmentService = require(script.EquipmentService)
 local WheelService = require(script.WheelService)
+local WeaponVisuals = require(script.WeaponVisuals)
 
 local function setupAtmosphere()
 	Lighting.ClockTime = 18.4
@@ -98,6 +99,8 @@ Players.PlayerAdded:Connect(function(player)
 			if hrp then
 				hrp.CFrame = plot.spawnPoint.CFrame
 			end
+			character:WaitForChild("RightHand", 2)
+			WeaponVisuals.Attach(player, data.EquippedWeapon)
 		end)
 	end
 

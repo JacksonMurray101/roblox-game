@@ -5,6 +5,7 @@ local Config = require(game:GetService("ReplicatedStorage").Modules.Config)
 local DataService = require(script.Parent.DataService)
 local PlotManager = require(script.Parent.PlotManager)
 local TurretController = require(script.Parent.TurretController)
+local WeaponVisuals = require(script.Parent.WeaponVisuals)
 
 local EquipmentService = {}
 
@@ -24,6 +25,7 @@ function EquipmentService.EquipWeapon(player, weaponId)
 
 	data.EquippedWeapon = weaponId
 	DataService.MarkDirty(player.UserId)
+	WeaponVisuals.Attach(player, weaponId)
 	return { ok = true, weaponId = weaponId }
 end
 

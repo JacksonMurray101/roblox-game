@@ -39,6 +39,15 @@ WeaponData.List = {
 		tracerColor = Color3.fromRGB(90, 200, 255),
 	},
 	{
+		id = "assault_rifle",
+		name = "Assault Rifle",
+		rarity = "Rare",
+		damage = 16,
+		fireRate = 5,
+		range = 70,
+		tracerColor = Color3.fromRGB(255, 220, 90),
+	},
+	{
 		id = "laser_rifle",
 		name = "Laser Rifle",
 		rarity = "Epic",
@@ -55,6 +64,15 @@ WeaponData.List = {
 		fireRate = 0.5,
 		range = 100,
 		tracerColor = Color3.fromRGB(255, 80, 220),
+	},
+	{
+		id = "minigun",
+		name = "Minigun",
+		rarity = "Legendary",
+		damage = 9,
+		fireRate = 14,
+		range = 65,
+		tracerColor = Color3.fromRGB(255, 60, 60),
 	},
 }
 

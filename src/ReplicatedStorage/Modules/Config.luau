@@ -1,8 +1,8 @@
 local Config = {}
 
 Config.MaxPlots = 6
-Config.PlotRadius = 140
-Config.PlotSize = Vector3.new(40, 1, 40)
+Config.PlotRadius = 260
+Config.PlotSize = Vector3.new(70, 1, 70)
 Config.MapCenter = Vector3.new(0, 5, 0)
 
 Config.WaveCountdown = 20 -- seconds before a wave starts
@@ -32,10 +32,10 @@ Config.PlacementEdgeMargin = 3 -- studs kept clear from a plot's platform edge w
 -- offsets from the plot platform's own center (local space, so they follow
 -- each plot's rotation automatically).
 Config.DefaultTurretOffsets = {
-	Vector3.new(-15, 0, -15),
-	Vector3.new(15, 0, -15),
-	Vector3.new(-15, 0, 15),
-	Vector3.new(15, 0, 15),
+	Vector3.new(-26, 0, -26),
+	Vector3.new(26, 0, -26),
+	Vector3.new(-26, 0, 26),
+	Vector3.new(26, 0, 26),
 }
 
 Config.StarterWeaponId = "pistol"
